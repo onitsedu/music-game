@@ -1,5 +1,87 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+html,
+body,
+#root {
+    background-color: black;
+    height: 100%;
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+}
 
-html, body, #root { height: 100%; }
+.bg-black {
+    background: black;
+    color: #1ed760;
+
+}
+
+/* CSS */
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    /* apila los elementos en columna */
+    align-items: center;
+    /* centra horizontalmente */
+    justify-content: center;
+    /* centra verticalmente */
+    /* ocupa toda la altura de la pantalla */
+    background-color: black;
+    /* fondo negro opcional */
+}
+
+.login-container {
+    display: flex;
+    flex-direction: column;
+    /* apila los elementos en columna */
+    align-items: center;
+    /* centra horizontalmente */
+    justify-content: center;
+    /* centra verticalmente */
+    height: 100vh;
+    /* ocupa toda la altura de la pantalla */
+    background-color: black;
+    /* fondo negro opcional */
+}
+
+.login-container img {
+    margin-bottom: 24px;
+    /* espacio entre la imagen y el botón */
+}
+
+.login-button {
+    padding: 12px 24px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #1DB954;
+    /* verde Spotify */
+    border: none;
+    border-radius: 24px;
+    color: white;
+    font-weight: bold;
+}
+
+.login-button:hover {
+    background-color: #1ed760;
+}
+
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /*height: 100vh;*/
+    /* ocupa toda la pantalla */
+}
+
+.form {
+    display: flex;
+    align-items: center;
+}
+
+.wheel-wrapper {
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+}

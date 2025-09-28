@@ -16,6 +16,7 @@ type SpinWheelProps = {
   pointerColor?: string;
   items: WheelItem[];
   onResult: (item: WheelItem) => void;
+  onClick?: () => void;
   size?: number; // diámetro de la ruleta
 };
 
@@ -24,7 +25,7 @@ export type SpinWheelRef = {
 };
 
 const SpinWheel = forwardRef<SpinWheelRef, SpinWheelProps>(
-  ({ items, onResult, size = 300, pointerColor = 'red' }, ref) => {
+  ({ items, onResult, size = 300, pointerColor = 'red', onClick }, ref) => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [isSpinning, setIsSpinning] = useState(false);
     const [rotation, setRotation] = useState(0);
@@ -73,7 +74,6 @@ const SpinWheel = forwardRef<SpinWheelRef, SpinWheelProps>(
 
       ctx.restore();
 
-      // 🔴 puntero fuera con base ancha y punta dentro
       ctx.fillStyle = pointerColor;
       ctx.beginPath();
       ctx.moveTo(radius - 20, -20); // base izq fuera
@@ -146,7 +146,7 @@ const SpinWheel = forwardRef<SpinWheelRef, SpinWheelProps>(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isSpinning]);
 
-    return <canvas ref={canvasRef} width={size} height={size} />;
+    return <canvas onClick={onClick} ref={canvasRef} width={size} height={size} />;
   }
 );
 

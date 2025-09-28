@@ -4,6 +4,8 @@ import { PlaylistResponse, Track, useGetPlaylistTracksQuery } from '../services/
 import SpinWheel, { SpinWheelRef, WheelItem } from './SpinWheel';
 import SpotifyPlayer from './SpotifyPlayer';
 import TrackCard from './TrackCard';
+import Button from '@mui/material/Button';
+import { Alert, Box, CircularProgress, Dialog, DialogActions, DialogContent, Typography } from '@mui/material';
 
 
 interface Props {
@@ -25,6 +27,8 @@ export default function Game({ accessToken, id }: Props) {
   const [trackId, setTrackId] = useState<string>('')
   const [actualTrack, setActualTrack] = useState<Track | undefined>(undefined)
   const [showTrack, setShowTrack] = useState(false)
+  const [openModal, setOpenModal] = useState(false);
+  const [winnerItem, setWinnerItem] = useState<WheelItem | null>(null);
 
 
   const limit = 50;
@@ -37,15 +41,34 @@ export default function Game({ accessToken, id }: Props) {
 
   const [page, setPage] = useState(0)
 
-  if (isLoading) return <p>Cargando…</p>
-  if (error) return <p>Error cargando la playlist</p>
+  if (isLoading) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+        bgcolor="black"
+      >
+        <CircularProgress size={60} sx={{ color: "#1DB954" }} />
+      </Box>
+    )
+  }
+
+  if (error) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <Alert severity="error">Error cargando la playlist</Alert>
+      </Box>
+    )
+  }
   if (!data) return null
 
   const handleOnResult = (item: WheelItem) => {
 
-    alert('Winner ' + item.name)
-    setReproduce(true);
-    const randomId = Math.floor(Math.random() * data.tracks.items.length) + 1
+    setWinnerItem(item);
+    setOpenModal(true); setReproduce(true);
+    const randomId = Math.floor(Math.random() * data.tracks.items.length)
     console.log(randomId)
     const track = data.tracks.items[randomId].track;
     //data.tracks.items.splice(trackId, 1);
@@ -59,20 +82,35 @@ export default function Game({ accessToken, id }: Props) {
 
   }
 
-
-
   return (
     <div className="space-y-4">
       {data &&
-        (<div>
-          <SpinWheel ref={wheelRef} size={500} items={easy} onResult={handleOnResult} ></SpinWheel>
-          <button onClick={spin} className="px-4 py-2 bg-blue-500 text-white rounded">Girar</button>
+        (<div className='wheel-wrapper'>
+          <div className='wheel-container'>
+            <SpinWheel onClick={spin} ref={wheelRef} size={500} items={easy} onResult={handleOnResult} ></SpinWheel>
+          </div>
+          {/* <div className='spin-container'>
+            <Button sx={{ marginTop: '25px' }} variant="contained" color="secondary" onClick={spin} >Girar</Button>
+          </div> */}
         </div>)
       }
       {reproduce && <SpotifyPlayer token={accessToken || ''} trackId={trackId}></SpotifyPlayer>}
-      {actualTrack && <button onClick={() => setShowTrack(true)} className="px-4 py-2 bg-blue-500 text-white rounded">Mostrar resultado</button>}
+      {actualTrack && <button onClick={() => setShowTrack(true)} >Mostrar resultado</button>}
       {actualTrack && showTrack && <TrackCard track={actualTrack} />}
-
+      <Dialog open={openModal} onClose={() => setOpenModal(false)}>
+        <DialogContent>
+          {winnerItem && (
+            <Typography variant="h6" sx={{ color: winnerItem.color, fontWeight: 'bold' }}>
+              Winner: {winnerItem.name}
+            </Typography>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" onClick={() => setOpenModal(false)}>
+            Aceptar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   )
 }
