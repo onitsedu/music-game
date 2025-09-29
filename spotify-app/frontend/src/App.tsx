@@ -54,12 +54,14 @@ export default function App() {
       ) : (
         <div >
           <header >
-            <div>
-              <h2>Conectado</h2>
 
-            </div>
             {!load && (
-              <PlaylistForm onSubmit={(id: string) => submit(id)} />
+              <>
+                <div>
+                  <h2>Conectado</h2>
+                </div>
+                <PlaylistForm onSubmit={(id: string) => submit(id)} />
+              </>
             )}
           </header>
           <main>

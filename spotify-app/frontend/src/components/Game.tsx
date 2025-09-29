@@ -65,9 +65,9 @@ export default function Game({ accessToken, id }: Props) {
   if (!data) return null
 
   const handleOnResult = (item: WheelItem) => {
-
     setWinnerItem(item);
-    setOpenModal(true); setReproduce(true);
+    setOpenModal(true);
+
     const randomId = Math.floor(Math.random() * data.tracks.items.length)
     console.log(randomId)
     const track = data.tracks.items[randomId].track;
@@ -76,37 +76,84 @@ export default function Game({ accessToken, id }: Props) {
     setActualTrack(track)
   }
 
+  const handleAccept = () => {
+    setOpenModal(false)
+    setReproduce(true);
+  }
+
+
   const spin = () => {
     setShowTrack(false)
     wheelRef.current?.spin();
 
   }
 
+  const newTurn = () => {
+    setReproduce(false);
+    setActualTrack(undefined);
+
+  }
+
   return (
     <div className="space-y-4">
-      {data &&
-        (<div className='wheel-wrapper'>
-          <div className='wheel-container'>
-            <SpinWheel onClick={spin} ref={wheelRef} size={500} items={easy} onResult={handleOnResult} ></SpinWheel>
-          </div>
-          {/* <div className='spin-container'>
+      <div className='game-wrapper'>
+        {data && !reproduce &&
+          (<div className='wheel-wrapper'>
+            <div className='wheel-container'>
+              <SpinWheel onClick={spin} ref={wheelRef} size={500} items={easy} onResult={handleOnResult} ></SpinWheel>
+            </div>
+            {/* <div className='spin-container'>
             <Button sx={{ marginTop: '25px' }} variant="contained" color="secondary" onClick={spin} >Girar</Button>
           </div> */}
-        </div>)
-      }
-      {reproduce && <SpotifyPlayer token={accessToken || ''} trackId={trackId}></SpotifyPlayer>}
-      {actualTrack && <button onClick={() => setShowTrack(true)} >Mostrar resultado</button>}
-      {actualTrack && showTrack && <TrackCard track={actualTrack} />}
+          </div>)
+        }
+        {reproduce && (
+          <div className='player-container'>
+            <SpotifyPlayer token={accessToken || ''} trackId={trackId}></SpotifyPlayer>
+          </div>)}
+        {actualTrack && showTrack && (
+          <div className='track-container'>
+            <TrackCard track={actualTrack} />
+          </div>)}
+        {actualTrack && !showTrack && (
+          <div className='show-result-container'>
+            <Button
+              variant="contained"
+              sx={{
+                margin: '25px',
+                backgroundColor: "#1DB954",
+                color: "black",
+                fontWeight: "bold",
+                "&:hover": { backgroundColor: "#1ed760" },
+              }}
+              onClick={() => setShowTrack(true)}
+            >        Mostrar resultado      </Button></div>
+        )}
+        {actualTrack && showTrack && (
+          <div className='show-result-container'>
+            <Button
+              variant="contained"
+              sx={{
+                margin: '25px',
+                backgroundColor: "#1DB954",
+                color: "black",
+                fontWeight: "bold",
+                "&:hover": { backgroundColor: "#1ed760" },
+              }}
+              onClick={newTurn}
+            >        Nuevo turno      </Button></div>
+        )}
+      </div>
       <Dialog open={openModal} onClose={() => setOpenModal(false)}>
-        <DialogContent>
+        <DialogContent sx={{ backgroundColor: winnerItem?.color, color: 'white', fontWeight: 'bold' }}>
           {winnerItem && (
-            <Typography variant="h6" sx={{ color: winnerItem.color, fontWeight: 'bold' }}>
+            <Typography variant="h6" sx={{ backgroundColor: winnerItem.color, color: 'white', fontWeight: 'bold' }}>
               Winner: {winnerItem.name}
             </Typography>
           )}
         </DialogContent>
-        <DialogActions>
-          <Button variant="contained" onClick={() => setOpenModal(false)}>
+        <DialogActions sx={{ backgroundColor: winnerItem?.color, color: 'white', fontWeight: 'bold' }}>
+          <Button sx={{ backgroundColor: 'black' }} variant="contained" onClick={handleAccept}>
             Aceptar
           </Button>
         </DialogActions>

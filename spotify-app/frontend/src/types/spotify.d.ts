@@ -23,9 +23,20 @@ declare namespace Spotify {
   }
 
   interface Player {
+    // conexión
     connect(): Promise<boolean>;
     disconnect(): void;
 
+    // control de reproducción
+    pause(): Promise<void>;
+    resume(): Promise<void>;
+    togglePlay(): Promise<void>;
+    seek(positionMs: number): Promise<void>;
+    getCurrentState(): Promise<PlaybackState | null>;
+    setVolume(volume: number): Promise<void>;
+    getVolume(): Promise<number>;
+
+    // eventos
     addListener(
       event: "ready" | "not_ready",
       cb: (args: { device_id: string }) => void
@@ -36,7 +47,14 @@ declare namespace Spotify {
       cb: (state: PlaybackState) => void
     ): boolean;
 
-    addListener(event: "initialization_error" | "authentication_error" | "account_error" | "playback_error", cb: (err: Error) => void): boolean;
+    addListener(
+      event:
+        | "initialization_error"
+        | "authentication_error"
+        | "account_error"
+        | "playback_error",
+      cb: (err: Error) => void
+    ): boolean;
 
     removeListener(event: string): void;
   }
